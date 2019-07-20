@@ -9,7 +9,18 @@ namespace SudokuLogic
     public static class Logic
     {
         public static int Size = Settings.BoardSize;
-        public static void BasicElimination(Board board)
+
+        public static void EliminatePossibilities(Board board)
+        {
+            BasicElimination(board);
+        }
+
+        public static void FillTheFields(Board board)
+        {
+            FillSinglePossibilityFields(board);
+        }
+
+        static void BasicElimination(Board board)
         {
             for (int rowPosition = 0; rowPosition < Size; rowPosition++)
             {
@@ -24,6 +35,18 @@ namespace SudokuLogic
             }
 
         }
+
+        static void FillSinglePossibilityFields(Board board)
+        {
+            for (int rowPosition = 0; rowPosition < Size; rowPosition++)
+                for (int columnPosition = 0; columnPosition < Size; columnPosition++)
+                {
+                    FillOnePossibilityFields(board, rowPosition, columnPosition);
+                    FillLastMissingInRowColumnOrSquare(board, rowPosition, columnPosition);
+                }
+        }
+
+        #region Elimination
 
         private static void EliminateRowsAndColumns(Board board, int rowPosition, int columnPosition)
         {
@@ -43,5 +66,61 @@ namespace SudokuLogic
             foreach (var field in fieldsToEliminate)
                 field.RemovePossibility(value);
         }
+
+        #endregion
+
+        #region Fill
+
+        private static void FillOnePossibilityFields(Board board, int rowPosition, int columnPosition)
+        {
+            var field = board.GetField(rowPosition, columnPosition);
+            if (!field.IsValid())
+                throw new Exception("Invalid field");
+                
+            if (field.Possibilities.Count == 1)
+                field.Value = field.Possibilities.First();
+        }
+
+        private static void FillLastMissingInRowColumnOrSquare(Board board, int rowPosition, int columnPosition)
+        {
+            var field = board.GetField(rowPosition, columnPosition);
+            var row = board.GetFieldsFromRow(rowPosition);
+            var column = board.GetFieldsFromColumn(columnPosition);
+            var square = board.GetFieldsFromSquare(field.MasterSquare);
+
+            for (int possibleNumber = 1; possibleNumber <= Size; possibleNumber++)
+            {
+                FillWithValueIfOneValueIsMissing(row, possibleNumber);
+                FillWithValueIfOneValueIsMissing(column, possibleNumber);
+                FillWithValueIfOneValueIsMissing(square, possibleNumber);
+            }
+        }
+
+        private static void FillWithValueIfOneValueIsMissing(List<Field> fields, int possibleNumber)
+        {
+            int countOfPossibilities = 0;
+            Field oneAndOnlyPossibilityField = null;
+            bool shouldFillWithValue = false;
+            foreach (var field in fields)
+                if (field.Possibilities.Contains(possibleNumber))
+                {
+                    if (countOfPossibilities < 2)
+                    {
+                        countOfPossibilities++;
+                        oneAndOnlyPossibilityField = field;
+                    }
+                    else
+                        break;
+                }
+
+            shouldFillWithValue = countOfPossibilities == 1;
+
+            if (shouldFillWithValue)
+            {
+                oneAndOnlyPossibilityField.SetValue(possibleNumber);
+            }
+        }
+
+        #endregion
     }
 }

@@ -54,6 +54,14 @@ namespace SudokuLogic
             return result;
         }
 
+        public List<Field> GetFieldsFromSquare(int masterSquare)
+        {
+            var result = new List<Field>();
+            foreach (var column in board)
+                result.AddRange(column.Where(x => x.MasterSquare == masterSquare));
+            return result;
+        }
+
         public void Init(List<List<int?>> initList)
         {
             if (initList.Count != Size || initList.Any(x => x.Count != Size))
@@ -81,7 +89,7 @@ namespace SudokuLogic
                 {
                     foreach (var field in columns)
                     {
-                        Console.Write(field.Value.HasValue ? field.Value.Value.ToString() : " " + " ");
+                        Console.Write((field.Value.HasValue ? field.Value.Value.ToString() : " ") + " ");
                     }
                     Console.WriteLine();
                 }

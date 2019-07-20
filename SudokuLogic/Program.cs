@@ -12,12 +12,14 @@ namespace SudokuLogic
         {
             Board board = new Board();
             var initList = new List<List<int?>> {
-                new List<int?>{ 1, null, null, null, null, null ,null ,null ,8},
-                new List<int?>{ null, null, null, null, 5, null ,null ,null ,null},
-                new List<int?>{ null, null, 3, null, null, null ,null ,null ,null},
+                new List<int?>{ 1, null, null, null, null, null ,6 ,7 ,8},
+                new List<int?>{ null, null, null, null, 5, null ,4 ,3 ,2},
+                new List<int?>{ null, null, 3, null, null, null ,null ,5 ,1},
+
                 new List<int?>{ null, null, null, null, null, null ,null ,1 ,null},
                 new List<int?>{ null, null, null, null, null, null ,null ,null ,null},
                 new List<int?>{ null, null, null, null, null, null ,null ,null ,null},
+
                 new List<int?>{ null, null, null, null, 7, null ,null ,null ,null},
                 new List<int?>{ null, null, null, null, null, null ,null ,null ,null},
                 new List<int?>{ null, 4, null, null, null, null ,null ,null ,null},
@@ -25,9 +27,9 @@ namespace SudokuLogic
             board.Init(initList);
 
             board.PrintConsole();
-            board.PrintConsole("P1");
-            Logic.BasicElimination(board);
-            board.PrintConsole("P1");
+            Logic.EliminatePossibilities(board);
+            Logic.FillTheFields(board);
+            board.PrintConsole();
 
         }
     }

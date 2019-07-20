@@ -10,20 +10,26 @@ namespace SudokuLogic
     {
         public int Size { get; set; }
         List<List<Field>> board;
+        public List<Field> AllFields { get; internal set; }
 
         public Board()
         {
             Size = Settings.BoardSize;
+            AllFields = new List<Field>();
             board = new List<List<Field>>();
-            for (int i = 0; i < Size; i++)
+            for (int rowPosition = 0; rowPosition < Size; rowPosition++)
             {
                 board.Add(new List<Field>());
-                for (int j = 0; j < Size; j++)
+                for (int columnPosition = 0; columnPosition < Size; columnPosition++)
                 {
-                    board[i].Add(new Field()
+                    var field = new Field()
                     {
-                        MasterSquare = GetMasterSquareNumber(i, j)
-                    });
+                        MasterSquare = GetMasterSquareNumber(rowPosition, columnPosition),
+                        Row = rowPosition,
+                        Column = columnPosition
+                    };
+                    board[rowPosition].Add(field);
+                    AllFields.Add(field);
                 }
             }
         }

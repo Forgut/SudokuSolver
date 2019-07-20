@@ -11,6 +11,8 @@ namespace SudokuLogic
         public List<int> Possibilities { get; set; }
         public int MasterSquare { get; set; }
         public int? Value { get; set; }
+        public int Row { get; set; }
+        public int Column { get; set; }
 
         public Field()
         {
